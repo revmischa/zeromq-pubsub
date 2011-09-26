@@ -21,6 +21,7 @@ WriteMakefile(
         'Clone' => 0,
         'namespace::autoclean' => 0,
     },
+    META_ADD => { resources => { repository => 'git://github.com/revmischa/zeromq-pubsub.git' } },
     dist                => { COMPRESS => 'gzip -9f', SUFFIX => 'gz', },
     clean               => { FILES => 'ZeroMQ-PubSub-*' },
 );
