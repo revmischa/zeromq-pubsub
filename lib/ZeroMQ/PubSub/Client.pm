@@ -36,9 +36,8 @@ ZeroMQ::PubSub::Client - Connect to a PubSub server to send and receive events
         print "Ping: " . (Time::HiRes::time() - $ping_start_time) . "s.\n";
     });
 
-    $ping_start_time = Time::HiRes::time();
-
     # publish ping event
+    $ping_start_time = Time::HiRes::time();
     $client->publish( ping => { 'time' => $ping_time } );
 
     # wait to receive our ping
@@ -94,7 +93,7 @@ has 'subscribe_address' => (
 =head2 connect_subscribe_sock
 
 Connects to the subscription socket on the server. Automatically
-called by C<subscribe()> and C<poll_once>.
+called by C<subscribe()> and C<poll_once()>.
 
 =cut
 
@@ -114,7 +113,7 @@ sub connect_subscribe_sock {
 =head2 connect_publish_sock
 
 Connects to the subscription socket on the server. Automatically
-called by C<subscribe()> and C<poll_once>.
+called by C<subscribe()> and C<poll_once()>.
 
 =cut
 
