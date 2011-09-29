@@ -1,12 +1,12 @@
 package ZeroMQ::PubSub::Client;
 
-use Moose;
+use Any::Moose;
 extends 'ZeroMQ::PubSub';
 
 use ZeroMQ qw/:all/;
 use Carp qw/croak/;
 use List::Util qw/shuffle/;
-use MooseX::Event;
+use Any::Moose 'X::Event';
 
 # should only be used internally
 has 'subscription_socket_connected' => ( is => 'rw', isa => 'Bool' );

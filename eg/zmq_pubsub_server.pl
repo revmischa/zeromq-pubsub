@@ -10,7 +10,7 @@ use ZeroMQ::PubSub::Server;
 
 my $server = ZeroMQ::PubSub::Server->new(
     publish_addrs   => [ 'tcp://0.0.0.0:4000', 'ipc:///tmp/pub.sock' ],
-    subscribe_addrs => [ 'tcp://0.0.0.0:5000', 'ipc:///tmp/sub.sock' ],
+    subscribe_addrs => [ 'tcp://0.0.0.0:4001', 'ipc:///tmp/sub.sock' ],
     debug           => 1,
 );
 

@@ -14,7 +14,7 @@ WriteMakefile(
     PL_FILES            => {},
     PREREQ_PM => {
         'Test::More' => 0,
-        'Moose' => 0,
+        'Any::Moose' => 0,
         'MooseX::Event' => 0,
         'ZeroMQ' => 0,
         'JSON' => 0,

@@ -2,7 +2,7 @@ package ZeroMQ::PubSub;
 
 use 5.006;
 
-use Moose;
+use Any::Moose;
 use ZeroMQ qw/:all/;
 use JSON;
 use namespace::autoclean;
