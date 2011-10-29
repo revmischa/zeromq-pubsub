@@ -151,6 +151,8 @@ sub poll_once {
 
 after 'subscribe' => sub {
     my ($self, $evt, $cb) = @_;
+
+    $self->print_debug("Got subscriber for $evt");
     
     # make sure we are connected and listening for events
     $self->connect_subscribe_sock;
@@ -168,8 +170,8 @@ sub publish {
 
     $params ||= {};
     my $msg = {
-        __type   => $evt,
-        __params => $params,
+        type   => $evt,
+        params => $params,
     };
 
     # make sure we're connected

@@ -103,16 +103,16 @@ don't need to call this.
 sub dispatch_event {
     my ($self, $msg) = @_;
 
-    # message type lives in __type
-    my $type = $msg->{__type};
+    # message type lives in type
+    my $type = $msg->{type};
     unless ($type) {
-        warn "Got ZeroMQ::PubSub message with no __type defined\n";
+        warn "Got ZeroMQ::PubSub message with no type defined\n";
         return;
     }
 
     $self->print_debug("Got $type event");
 
-    my $params = $msg->{__params} || {};
+    my $params = $msg->{params} || {};
 
     # calls callbacks
     $self->_ensure_event_handler_exists($type);
