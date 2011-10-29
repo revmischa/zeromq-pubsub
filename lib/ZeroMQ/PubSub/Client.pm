@@ -161,7 +161,8 @@ after 'subscribe' => sub {
 
 =head2 publish($event, $params)
 
-Publishes $event to all subscribers on the server.
+Publishes $event to all subscribers on the server. This will block
+while attempting to connect.
 
 =cut
 
