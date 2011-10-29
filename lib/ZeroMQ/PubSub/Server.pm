@@ -8,7 +8,9 @@ extends 'ZeroMQ::PubSub';
 use ZeroMQ qw/:all/;
 use Clone qw/clone/;
 use Carp qw/croak/;
-use Any::Moose 'X::Event';
+
+#use Any::Moose 'X::Event';
+use MooseX::Event;
 
 # socket to listen for client events
 # clients publish events to us here
@@ -146,14 +148,20 @@ sub bind_subscribe_socket {
 
 =head2 recv
 
-Blocks and receives one event. Returns event.
+Blocks and receives one event. Returns object parsed from JSON, or undef if failure.
 
 =cut
 
 sub recv {
     my ($self) = @_;
 
-    return $self->publish_sock->recv_as('json');
+    my $json = $self->publish_sock->recv_as('json');
+    unless ($json) {
+        warn "Got invalid event: failed to parse JSON";
+        return;
+    }
+
+    return $json;
 }
 
 
@@ -167,8 +175,6 @@ sub broadcast {
     my ($self, $event) = @_;
 
     croak "event is required" unless $event;
-    croak "$event is not a valid PubSub event"
-        unless $event->{__type};
 
     return $self->subscribe_sock->send_as(json => $event);
 }
@@ -191,6 +197,8 @@ sub poll_once {
         warn "Failed to parse message, may not have been valid JSON\n";
         next;
     }
+
+    
 
     # deep clone $msg so that event handlers can't modify it
     my $orig = clone($msg);

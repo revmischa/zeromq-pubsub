@@ -6,7 +6,9 @@ extends 'ZeroMQ::PubSub';
 use ZeroMQ qw/:all/;
 use Carp qw/croak/;
 use List::Util qw/shuffle/;
-use Any::Moose 'X::Event';
+
+#use Any::Moose 'X::Event';
+use MooseX::Event;
 
 # should only be used internally
 has 'subscription_socket_connected' => ( is => 'rw', isa => 'Bool' );

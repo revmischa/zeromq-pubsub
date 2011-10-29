@@ -1,7 +1,5 @@
 package ZeroMQ::PubSub;
 
-use 5.006;
-
 use Any::Moose;
 use ZeroMQ qw/:all/;
 use JSON;
