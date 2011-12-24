@@ -128,7 +128,7 @@ sub _ensure_event_handler_exists {
     if (! $self->event_exists($evt)) {
         # define new event. could make user declare all possible
         # events up front but that's not very flexible.
-        $self->has_event($evt);
+        MooseX::Event::has_event($evt);
     }
 }
 
