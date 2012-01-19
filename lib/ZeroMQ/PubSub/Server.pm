@@ -195,10 +195,8 @@ sub poll_once {
             
     unless ($msg) {
         warn "Failed to parse message, may not have been valid JSON\n";
-        next;
+        return;
     }
-
-    
 
     # deep clone $msg so that event handlers can't modify it
     my $orig = clone($msg);
