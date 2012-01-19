@@ -155,9 +155,9 @@ Blocks and receives one event. Returns object parsed from JSON, or undef if fail
 sub recv {
     my ($self) = @_;
 
-    my $json = $self->publish_sock->recv_as('json');
+    my $json = eval { $self->publish_sock->recv_as('json') };
     unless ($json) {
-        warn "Got invalid event: failed to parse JSON";
+        warn "Got invalid event: failed to parse JSON: $@";
         return;
     }
 
