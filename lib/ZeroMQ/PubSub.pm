@@ -43,10 +43,10 @@ sub print_info {
 }
 
 sub DEMOLISH {
-    my ($self) = @_;
+    my ($self, $igd) = @_;
 
-    $self->publish_sock->close if $self->publish_socket_exists;
-    $self->subscribe_sock->close if $self->subscription_socket_exists;
+    $self->publish_sock->close if $self->publish_socket_exists && $self->publish_sock;
+    $self->subscribe_sock->close if $self->subscription_socket_exists && $self->subscribe_sock;
 }
 
 =head1 NAME
@@ -84,8 +84,13 @@ $callback is called with two arguments: $self (client or server instance) and ev
 sub subscribe {
     my ($self, $evt, $cb) = @_;
 
+    # create callback wrapper
+    my $cb_wrapped = sub {
+        $cb->($self, @_);
+    };
+    
     # set up callback
-    $self->register_callback($evt => $cb);
+    $self->register_callback($evt => $cb_wrapped);
 }
 
 

@@ -49,3 +49,5 @@ $server->poll_once;
 $client->poll_once;
 
 # done!
+
+done_testing();
