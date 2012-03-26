@@ -2,15 +2,12 @@
 
 package ZeroMQ::PubSub::Server;
 
-use Any::Moose;
+use Moose;
 extends 'ZeroMQ::PubSub';
 
 use ZeroMQ qw/:all/;
 use Clone qw/clone/;
 use Carp qw/croak/;
-
-#use Any::Moose 'X::Event';
-use MooseX::Event;
 
 # socket to listen for client events
 # clients publish events to us here
