@@ -1,6 +1,6 @@
 #!perl
 
-use Test::More tests => 5;
+use Test::More tests => 7;
 use strict;
 use warnings;
 
@@ -15,6 +15,8 @@ my $server = ZeroMQ::PubSub::Server->new(
     subscribe_addrs => [ 'tcp://0.0.0.0:63124' ],
     debug           => 0,
 );
+
+my $start_time = time();
 
 # called when server receives ping
 $server->subscribe(ping => sub {
@@ -52,8 +54,6 @@ sub subscribe_client {
         subscribe_address => 'tcp://127.0.0.1:63124',
         debug             => 0,
     );
-
-    my $start_time = time();
 
     # called when we receive our ping back
     $client->subscribe(ping => sub {
