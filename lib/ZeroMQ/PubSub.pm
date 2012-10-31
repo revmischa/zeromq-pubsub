@@ -1,7 +1,7 @@
 package ZeroMQ::PubSub;
 
 use Moose;
-use ZeroMQ qw/:all/;
+use ZeroMQ;
 use JSON;
 use namespace::autoclean;
 
@@ -151,7 +151,7 @@ L<ZeroMQ>
 
 =head1 LICENSE AND COPYRIGHT
 
-Copyright 2011 Mischa Spiegelmock.
+Copyright 2012 Mischa Spiegelmock.
 
 This program is free software; you can redistribute it and/or modify it
 under the terms of either: the GNU General Public License as published

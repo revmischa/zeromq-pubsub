@@ -3,7 +3,8 @@ package ZeroMQ::PubSub::Client;
 use Moose;
 extends 'ZeroMQ::PubSub';
 
-use ZeroMQ qw/:all/;
+use ZMQ::LibZMQ2;
+use ZMQ::Constants ':all';
 use Carp qw/croak/;
 use List::Util qw/shuffle/;
 

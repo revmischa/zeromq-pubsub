@@ -16,7 +16,7 @@ WriteMakefile(
         'Test::More' => 0,
         'Moose' => 0,
         'MooseX::Callbacks' => 0,
-        'ZeroMQ' => 0,
+        'ZMQ::LibZMQ2' => 0,
         'JSON' => 0,
         'Clone' => 0,
         'namespace::autoclean' => 0,

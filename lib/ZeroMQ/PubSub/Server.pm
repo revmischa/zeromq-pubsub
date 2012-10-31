@@ -5,7 +5,8 @@ package ZeroMQ::PubSub::Server;
 use Moose;
 extends 'ZeroMQ::PubSub';
 
-use ZeroMQ qw/:all/;
+use ZMQ::LibZMQ2;
+use ZMQ::Constants ':all';
 use Clone qw/clone/;
 use Carp qw/croak/;
 
