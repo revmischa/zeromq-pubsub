@@ -5,6 +5,7 @@ extends 'ZeroMQ::PubSub';
 
 use ZMQ::LibZMQ2;
 use ZMQ::Constants ':all';
+use JSON qw/encode_json decode_json/;
 use Carp qw/croak/;
 use List::Util qw/shuffle/;
 
@@ -49,8 +50,8 @@ ZeroMQ::PubSub::Client - Connect to a PubSub server to send and receive events
 sub _build_subscribe_sock {
     my ($self) = @_;
 
-    my $sub_sock = $self->context->socket(ZMQ_SUB);
-    $sub_sock->setsockopt(ZMQ_SUBSCRIBE, '');
+    my $sub_sock = zmq_socket($self->context, ZMQ_SUB);
+    zmq_setsockopt($sub_sock, ZMQ_SUBSCRIBE, '');
     return $sub_sock;
 }
 
@@ -58,7 +59,7 @@ sub _build_subscribe_sock {
 sub _build_publish_sock {
     my ($self) = @_;
 
-    my $pub_sock = $self->context->socket(ZMQ_PUB);
+    my $pub_sock = zmq_socket($self->context, ZMQ_PUB);
     return $pub_sock;
 }
 
@@ -105,7 +106,7 @@ sub connect_subscribe_sock {
     my $addr = $self->subscribe_address or croak 'subscribe_address must be defined if you want to subscribe to events';
 
     $self->print_debug("Connecting to subscription socket $addr");
-    $self->subscribe_sock->connect($addr);
+    zmq_connect($self->subscribe_sock, $addr);
     $self->subscription_socket_connected(1);
 }
 
@@ -125,7 +126,7 @@ sub connect_publish_sock {
     my $addr = $self->publish_address or croak 'publish_address must be defined if you want to publish events';
 
     $self->print_debug("Connecting to event publishing socket $addr");
-    $self->publish_sock->connect($addr);
+    zmq_connect($self->publish_sock, $addr);
     $self->publish_socket_connected(1);
 }
 
@@ -143,7 +144,9 @@ sub poll_once {
     $self->connect_subscribe_sock;
 
     # receive and parse one message
-    my $msg = $self->subscribe_sock->recv_as('json');
+    my $msg_raw = zmq_recv($self->subscribe_sock);
+    my $msg_str = zmq_msg_data($msg_raw);
+    my $msg = decode_json($msg_str);
     $self->dispatch_event($msg);
 }
 
@@ -175,8 +178,9 @@ sub publish {
 
     # make sure we're connected
     $self->connect_publish_sock;
-    
-    my $res = $self->publish_sock->send_as(json => $msg);
+
+    my $json_str = encode_json($msg);
+    my $res = zmq_send($self->publish_sock, $json_str);
     $self->print_debug("Published $evt, res=$res");
 
     return $res;

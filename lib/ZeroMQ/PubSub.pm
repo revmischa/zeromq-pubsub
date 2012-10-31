@@ -1,7 +1,7 @@
 package ZeroMQ::PubSub;
 
 use Moose;
-use ZeroMQ;
+use ZMQ::LibZMQ2;
 use JSON;
 use namespace::autoclean;
 
@@ -9,25 +9,25 @@ with 'MooseX::Callbacks';
 
 has 'context' => (
     is => 'rw',
-    isa => 'ZeroMQ::Context',
+    isa => 'ZMQ::LibZMQ2::Context',
     lazy_build => 1,
 );
 
 has 'publish_sock' => (
     is => 'rw',
-    isa => 'ZeroMQ::Socket',
+    isa => 'ZMQ::LibZMQ2::Socket',
     lazy_build => 1,
     predicate => 'publish_socket_exists',
 );
 
 has 'subscribe_sock' => (
     is => 'rw',
-    isa => 'ZeroMQ::Socket',
+    isa => 'ZMQ::LibZMQ2::Socket',
     lazy_build => 1,
     predicate => 'subscription_socket_exists',
 );
 
-sub _build_context { ZeroMQ::Context->new }
+sub _build_context { zmq_init() }
 
 sub print_debug {
     my ($self, $msg) = @_;
@@ -45,8 +45,8 @@ sub print_info {
 sub DEMOLISH {
     my ($self, $igd) = @_;
 
-    $self->publish_sock->close if $self->publish_socket_exists && $self->publish_sock;
-    $self->subscribe_sock->close if $self->subscription_socket_exists && $self->subscribe_sock;
+    zmq_close($self->publish_sock) if $self->publish_socket_exists && $self->publish_sock;
+    zmq_close($self->subscribe_sock) if $self->subscription_socket_exists && $self->subscribe_sock;
 }
 
 =head1 NAME

@@ -7,6 +7,7 @@ extends 'ZeroMQ::PubSub';
 
 use ZMQ::LibZMQ2;
 use ZMQ::Constants ':all';
+use JSON qw/encode_json decode_json/;
 use Clone qw/clone/;
 use Carp qw/croak/;
 
@@ -15,10 +16,10 @@ use Carp qw/croak/;
 sub _build_publish_sock {
     my ($self) = @_;
 
-    my $pub_sock = $self->context->socket(ZMQ_SUB);
+    my $pub_sock = zmq_socket($self->context, ZMQ_SUB);
 
     # by default ZMQ_SUB filters out all events, remove filter
-    $pub_sock->setsockopt(ZMQ_SUBSCRIBE, '');
+    zmq_setsockopt($pub_sock, ZMQ_SUBSCRIBE, '');
     
     return $pub_sock;
 }
@@ -27,7 +28,7 @@ sub _build_publish_sock {
 sub _build_subscribe_sock {
     my ($self) = @_;
 
-    my $sub_sock = $self->context->socket(ZMQ_PUB);
+    my $sub_sock = zmq_socket($self->context, ZMQ_PUB);
     return $sub_sock;
 }
 
@@ -119,7 +120,7 @@ sub bind_publish_socket {
         
     foreach my $addr (@{ $self->publish_addrs }) {
         $self->print_info("Event publishing socket listening on $addr");
-        $self->publish_sock->bind($addr);
+        zmq_bind($self->publish_sock, $addr);
     }
 
     return $self->publish_sock;
@@ -137,7 +138,7 @@ sub bind_subscribe_socket {
     
     foreach my $addr (@{ $self->subscribe_addrs }) {
         $self->print_info("Event subscription socket listening on $addr");
-        $self->subscribe_sock->bind($addr);
+        zmq_bind($self->subscribe_sock, $addr);
     }
 
     return $self->subscribe_sock;
@@ -153,7 +154,9 @@ Blocks and receives one event. Returns object parsed from JSON, or undef if fail
 sub recv {
     my ($self) = @_;
 
-    my $json = eval { $self->publish_sock->recv_as('json') };
+    my $msg = zmq_recv($self->publish_sock);
+    my $json_str = zmq_msg_data($msg);
+    my $json = eval { decode_json($json_str) };
     unless ($json) {
         warn "Got invalid event: failed to parse JSON: $@";
         return;
@@ -174,7 +177,8 @@ sub broadcast {
 
     croak "event is required" unless $event;
 
-    return $self->subscribe_sock->send_as(json => $event);
+    my $json = encode_json($event);
+    return zmq_send($self->subscribe_sock, $json);
 }
 
 
